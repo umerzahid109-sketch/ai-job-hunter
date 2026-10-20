@@ -1,4 +1,17 @@
+from src.ai_application_assistant import (
+    tailor_cv,
+    generate_cover_letter,
+    verify_generated_text,
+)
 
+from io import BytesIO
+from pypdf import PdfReader
+
+from src.cv_matcher import calculate_cv_match
+from src.linkedin_search import (
+    build_linkedin_search_url,
+    get_search_categories,
+)
 import pandas as pd
 import streamlit as st
 from datetime import date
@@ -155,6 +168,42 @@ with st.sidebar:
         refresh_jobs()
         st.rerun()
 
+# ---------------- LINKEDIN SEARCH ----------------
+
+st.sidebar.divider()
+st.sidebar.subheader("🔎 LinkedIn Job Search")
+
+linkedin_category = st.sidebar.selectbox(
+    "Target role",
+    options=get_search_categories(),
+    key="linkedin_category",
+)
+
+linkedin_location = st.sidebar.text_input(
+    "LinkedIn job location",
+    value="Karachi, Pakistan",
+    key="linkedin_location",
+)
+
+if st.sidebar.button(
+    "Prepare LinkedIn Search",
+    use_container_width=True,
+):
+    if linkedin_location.strip():
+        linkedin_url = build_linkedin_search_url(
+            linkedin_category,
+            linkedin_location.strip(),
+        )
+        st.session_state["linkedin_search_url"] = linkedin_url
+    else:
+        st.sidebar.warning("Enter a location first.")
+
+if st.session_state.get("linkedin_search_url"):
+    st.sidebar.link_button(
+        "Open LinkedIn Jobs",
+        st.session_state["linkedin_search_url"],
+        use_container_width=True,
+    )
 
 # ---------------- REFRESH RESULTS ----------------
 
@@ -217,6 +266,359 @@ jobs_df["score"] = pd.to_numeric(
 jobs_df["status"] = jobs_df["status"].fillna("New")
 jobs_df["notes"] = jobs_df["notes"].fillna("")
 
+
+# ---------------- CV MATCHER ----------------
+
+st.divider()
+st.header("📄 CV-to-Job Matcher")
+
+st.write(
+    "Upload your CV and compare it with a job description. "
+    "PDF extraction and text matching run locally."
+)
+
+uploaded_cv = st.file_uploader(
+    "Upload your CV (PDF)",
+    type=["pdf"],
+    key="uploaded_cv",
+)
+
+cv_text = ""
+
+if uploaded_cv is not None:
+    try:
+        reader = PdfReader(BytesIO(uploaded_cv.getvalue()))
+        cv_text = " ".join(
+            page.extract_text() or ""
+            for page in reader.pages
+        ).strip()
+
+        if cv_text:
+            st.success("CV text extracted successfully.")
+            with st.expander("Preview extracted CV text"):
+                st.text(cv_text[:4000])
+        else:
+            st.warning(
+                "No selectable text was found. "
+                "Try a text-based PDF rather than a scanned CV."
+            )
+
+    except Exception as exc:
+        st.error(f"Unable to read this PDF: {exc}")
+
+job_description = st.text_area(
+    "Paste a job description",
+    height=220,
+    placeholder=(
+        "Paste the job responsibilities, qualifications "
+        "and required skills here."
+    ),
+    key="cv_matcher_description",
+)
+
+if st.button("Analyze CV Match", type="primary"):
+    if not cv_text:
+        st.warning("Upload a readable PDF CV first.")
+
+    elif not job_description.strip():
+        st.warning("Paste a job description first.")
+
+    else:
+        result = calculate_cv_match(
+            cv_text,
+            job_description,
+        )
+
+        st.subheader("Matching results")
+
+        st.metric(
+            "Text similarity",
+            f"{result['match_score']}%",
+        )
+
+        st.caption(
+            "This score measures text similarity, not your "
+            "probability of being hired."
+        )
+
+        match_col, missing_col = st.columns(2)
+
+        with match_col:
+            st.markdown("**Overlapping terms**")
+            if result["matched_terms"]:
+                st.write(", ".join(result["matched_terms"]))
+            else:
+                st.write("No overlapping terms identified.")
+
+        with missing_col:
+            st.markdown("**Potential missing terms**")
+            if result["missing_terms"]:
+                st.write(", ".join(result["missing_terms"]))
+            else:
+                st.write("No job-only terms identified.")
+
+        st.info(
+            "Review potential missing terms manually. "
+            "They may include ordinary words, not only skills."
+        )
+
+
+
+# ---------------- AI APPLICATION ASSISTANT ----------------
+
+st.header("AI Application Assistant")
+st.caption(
+    "Generate job-specific CV suggestions and cover letters, "
+    "then audit their claims against your uploaded CV."
+)
+
+# Reuse the CV and job description from the existing CV matcher.
+ai_cv_text = locals().get("cv_text", "")
+ai_job_description = locals().get("job_description", "")
+
+if not ai_cv_text or not ai_job_description:
+    st.info(
+        "Upload your CV and enter a target job description in the "
+        "CV Matcher section above to use this feature."
+    )
+else:
+    st.success("CV and job description detected. Ready to generate.")
+
+    col1, col2 = st.columns(2)
+
+    # ---------------- GENERATE CONTENT ----------------
+
+    with col1:
+        if st.button(
+            "Tailor My CV",
+            key="ai_tailor_cv_button",
+            use_container_width=True,
+        ):
+            with st.spinner("Analyzing your CV against the job..."):
+                try:
+                    st.session_state["ai_cv_suggestions"] = tailor_cv(
+                        ai_cv_text,
+                        ai_job_description,
+                    )
+
+                    # Clear the previous editor and audit for new content.
+                    st.session_state.pop("ai_cv_suggestions_editor", None)
+                    st.session_state.pop("ai_cv_audit", None)
+
+                    st.success("CV suggestions generated.")
+                except (RuntimeError, ValueError) as error:
+                    st.error(str(error))
+
+    with col2:
+        if st.button(
+            "Generate Cover Letter",
+            key="ai_generate_cover_letter_button",
+            use_container_width=True,
+        ):
+            with st.spinner("Writing your tailored cover letter..."):
+                try:
+                    st.session_state["ai_cover_letter"] = (
+                        generate_cover_letter(
+                            ai_cv_text,
+                            ai_job_description,
+                        )
+                    )
+
+                    # Clear the previous editor and audit for new content.
+                    st.session_state.pop("ai_cover_letter_editor", None)
+                    st.session_state.pop("ai_cover_letter_audit", None)
+
+                    st.success("Cover letter generated.")
+                except (RuntimeError, ValueError) as error:
+                    st.error(str(error))
+
+    # ---------------- CV SUGGESTIONS ----------------
+
+    if st.session_state.get("ai_cv_suggestions"):
+        st.divider()
+        st.subheader("CV Improvement Suggestions")
+
+        st.warning(
+            "Review every recommendation. Do not add unsupported "
+            "skills, projects, responsibilities, or achievements "
+            "to your CV."
+        )
+
+        st.text_area(
+            "Generated CV review — edit before using",
+            value=st.session_state["ai_cv_suggestions"],
+            height=350,
+            key="ai_cv_suggestions_editor",
+        )
+
+        # Read the current editable text, not just the original output.
+        current_cv_suggestions = st.session_state.get(
+            "ai_cv_suggestions_editor",
+            st.session_state["ai_cv_suggestions"],
+        )
+
+        if st.button(
+            "Audit CV Suggestions",
+            key="ai_audit_cv_button",
+            use_container_width=True,
+        ):
+            with st.spinner("Checking claims against your CV..."):
+                try:
+                    st.session_state["ai_cv_audit"] = (
+                        verify_generated_text(
+                            ai_cv_text,
+                            current_cv_suggestions,
+                        )
+                    )
+                except (RuntimeError, ValueError) as error:
+                    st.error(f"CV audit failed: {error}")
+
+        # Display the most recent CV audit.
+        if "ai_cv_audit" in st.session_state:
+            claims = st.session_state["ai_cv_audit"]
+
+            st.markdown("#### CV Evidence Audit")
+            st.caption(
+                "Run the audit again after editing your suggestions. "
+                "A matching quotation is not proof that a claim is "
+                "fully accurate."
+            )
+
+            if not claims:
+                st.info("No candidate-specific claims were returned.")
+            else:
+                st.dataframe(
+                    [
+                        {
+                            "Claim": item.get("claim", ""),
+                            "Status": item.get("status", "Not provided"),
+                            "Exact quotation found": item.get(
+                                "evidence_exists_verbatim", False
+                            ),
+                            "Supporting evidence": item.get("evidence", ""),
+                            "Reason": item.get("reason", ""),
+                        }
+                        for item in claims
+                    ],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+                flagged_count = sum(
+                    "FLAGGED" in item.get("status", "").upper()
+                    for item in claims
+                )
+
+                if flagged_count:
+                    st.warning(
+                        f"{flagged_count} claim(s) flagged for review. "
+                        "Remove or correct unsupported claims before "
+                        "using the suggestions."
+                    )
+                else:
+                    st.info(
+                        "No claims were flagged by this audit. "
+                        "Manually verify every claim before using it."
+                    )
+
+        st.download_button(
+            "Download CV Suggestions",
+            data=current_cv_suggestions,
+            file_name="cv_improvement_suggestions.txt",
+            mime="text/plain",
+            key="ai_download_cv_suggestions",
+        )
+
+    # ---------------- COVER LETTER ----------------
+
+    if st.session_state.get("ai_cover_letter"):
+        st.divider()
+        st.subheader("Tailored Cover Letter")
+
+        st.text_area(
+            "Review and edit your cover letter",
+            value=st.session_state["ai_cover_letter"],
+            height=350,
+            key="ai_cover_letter_editor",
+        )
+
+        current_cover_letter = st.session_state.get(
+            "ai_cover_letter_editor",
+            st.session_state["ai_cover_letter"],
+        )
+
+        if st.button(
+            "Audit Cover Letter",
+            key="ai_audit_cover_letter_button",
+            use_container_width=True,
+        ):
+            with st.spinner("Checking cover letter claims against your CV..."):
+                try:
+                    st.session_state["ai_cover_letter_audit"] = (
+                        verify_generated_text(
+                            ai_cv_text,
+                            current_cover_letter,
+                        )
+                    )
+                except (RuntimeError, ValueError) as error:
+                    st.error(f"Cover letter audit failed: {error}")
+
+        # Display the most recent cover letter audit.
+        if "ai_cover_letter_audit" in st.session_state:
+            claims = st.session_state["ai_cover_letter_audit"]
+
+            st.markdown("#### Cover Letter Evidence Audit")
+            st.caption(
+                "Check that every statement describes your actual "
+                "experience. Re-run this audit after editing."
+            )
+
+            if not claims:
+                st.info("No candidate-specific claims were returned.")
+            else:
+                st.dataframe(
+                    [
+                        {
+                            "Claim": item.get("claim", ""),
+                            "Status": item.get("status", "Not provided"),
+                            "Exact quotation found": item.get(
+                                "evidence_exists_verbatim", False
+                            ),
+                            "Supporting evidence": item.get("evidence", ""),
+                            "Reason": item.get("reason", ""),
+                        }
+                        for item in claims
+                    ],
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+                flagged_count = sum(
+                    "FLAGGED" in item.get("status", "").upper()
+                    for item in claims
+                )
+
+                if flagged_count:
+                    st.warning(
+                        f"{flagged_count} claim(s) flagged for review. "
+                        "Correct or remove unsupported statements."
+                    )
+                else:
+                    st.info(
+                        "No claims were flagged by this audit. "
+                        "Manually verify every claim before sending."
+                    )
+
+        st.download_button(
+            "Download Cover Letter",
+            data=current_cover_letter,
+            file_name="tailored_cover_letter.txt",
+            mime="text/plain",
+            key="ai_download_cover_letter",
+        )
+
+
+# ---------------- END AI APPLICATION ASSISTANT ----------------
 
 # ---------------- OVERVIEW ----------------
 
@@ -447,6 +849,7 @@ else:
                         st.rerun()
                     else:
                         st.error("Could not save tracking details.")
+
 
 
 # ---------------- CSV EXPORT ----------------
