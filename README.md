@@ -2,20 +2,23 @@
 
 **An AI-Powered Job Discovery and Application Assistant**
 
-AI Job Hunter is a Python-based application designed to simplify the job search process. It retrieves publicly available remote job listings, helps candidates evaluate their CVs against job descriptions, and uses AI to assist with CV tailoring, cover-letter generation, and verification of generated application content.
+AI Job Hunter is a Python-based application that helps candidates discover remote job opportunities, evaluate their CVs against job descriptions, and prepare tailored job applications with AI assistance.
 
-The project combines job discovery, machine learning-based CV matching, and generative AI in an interactive Streamlit application.
+Built with Streamlit, Python, and the Groq API, the project brings job discovery, application tracking, CV matching, and AI-powered career tools into one interactive application.
 
 ## 🚀 Features
 
-- **Live Job Discovery:** Retrieves job listings from public sources, including Jobicy and Remotive.
-- **CV-to-Job Matching:** Evaluates the compatibility between a candidate's CV and a job description.
-- **AI-Powered CV Tailoring:** Generates role-specific CV improvement suggestions grounded in the candidate's existing experience.
-- **Cover Letter Generation:** Creates tailored cover letters based on the candidate's CV and target job description.
-- **AI Content Verification:** Checks generated application content against CV evidence to help identify unsupported claims.
-- **LinkedIn Search Support:** Includes a module for LinkedIn-related job searching.
-- **Interactive Dashboard:** Uses Streamlit to provide a graphical interface for job discovery and application assistance.
-- **Automated Testing:** Includes test scripts for CV assistance and Groq API connectivity and generation.
+- **Live Remote Job Discovery:** Retrieves publicly available job listings from Jobicy and Remotive.
+- **Interactive Dashboard:** Provides a centralized interface for exploring opportunities and managing your job search.
+- **Job Search and Filtering:** Browse and filter matching job listings using available search criteria.
+- **Application Tracking:** Track job application statuses and organize opportunities throughout the application process.
+- **Follow-up Reminders:** Support for managing application follow-ups.
+- **CV-to-Job Matching:** Evaluate how well a candidate's CV aligns with a target job description.
+- **AI-Powered CV Tailoring:** Generate role-specific CV improvement suggestions grounded in the candidate's existing experience.
+- **AI Cover Letter Generation:** Create tailored cover letters using CV information and the target job description.
+- **Generated Content Verification:** Review AI-generated application content against available CV evidence to help identify unsupported claims.
+- **LinkedIn Search Support:** Includes functionality for LinkedIn-related job searching.
+- **Automated Tests:** Includes scripts for testing application-assistance functionality and Groq API connectivity and generation.
 
 ## 🛠️ Technology Stack
 
@@ -29,41 +32,44 @@ The project combines job discovery, machine learning-based CV matching, and gene
 | Large Language Model | `openai/gpt-oss-20b` |
 | AI Integration | Groq Chat Completions API |
 | Job Data Sources | Jobicy, Remotive |
-| Configuration | Environment variables |
+| Configuration | Environment variables and Streamlit TOML configuration |
 | Version Control | Git and GitHub |
 
 ## 🤖 AI Model and Configuration
 
-AI-powered application assistance uses the **`openai/gpt-oss-20b`** model through the Groq API.
+AI-powered application assistance uses the `openai/gpt-oss-20b` model through the Groq API.
 
-The model supports features such as CV tailoring, cover-letter generation, and evidence-based verification.
+The AI assistant supports CV tailoring, cover-letter generation, and evidence-based verification of generated application content.
 
-### Model settings
+**Model configuration**
 
 - **Provider:** Groq
 - **Model:** `openai/gpt-oss-20b`
 - **API endpoint:** `https://api.groq.com/openai/v1/chat/completions`
-- **Temperature:** `0.3`
-- **Reasoning effort:** `low`
-- **Maximum completion tokens:** `400` in the generation test configuration
 - **API key environment variable:** `GROQ_API_KEY`
 
-These settings reflect the project's Groq integration and generation-test configuration.
+Generation parameters may vary between the application and individual test scripts.
 
 ## 📁 Project Structure
 
 ```text
 ai-job-hunter/
-│
-├── app.py
-├── requirements.txt
-├── .gitattributes
-│
+├── .streamlit/
+│   └── config.toml
 ├── src/
 │   ├── ai_application_assistant.py
 │   ├── cv_matcher.py
-│   └── linkedin_search.py
-│
+│   ├── database.py
+│   ├── job_matcher.py
+│   ├── job_sources.py
+│   ├── linkedin_search.py
+│   └── main.py
+├── app.py
+├── requirements.txt
+├── .env.example
+├── .gitignore
+├── .gitattributes
+├── README.md
 ├── test_application_assistant.py
 ├── test_groq_connection.py
 └── test_groq_generation.py
@@ -71,14 +77,17 @@ ai-job-hunter/
 
 ### Main files
 
-- **`app.py`** — Streamlit application and user interface.
+- **`app.py`** — Main Streamlit application and user interface.
 - **`src/ai_application_assistant.py`** — AI-assisted CV tailoring, cover-letter generation, and generated-content verification.
-- **`src/cv_matcher.py`** — CV and job-description matching functionality.
+- **`src/cv_matcher.py`** — CV-to-job-description matching functionality.
+- **`src/database.py`** — Database operations for application data.
+- **`src/job_matcher.py`** — Job-matching functionality.
+- **`src/job_sources.py`** — Integration with public job listing sources.
 - **`src/linkedin_search.py`** — LinkedIn-related search functionality.
-- **`test_application_assistant.py`** — Tests application-assistance features.
-- **`test_groq_connection.py`** — Tests connectivity to the Groq API.
-- **`test_groq_generation.py`** — Tests AI text generation.
+- **`src/main.py`** — Main entry point for the job discovery workflow.
+- **`.streamlit/config.toml`** — Streamlit theme configuration.
 - **`requirements.txt`** — Python dependencies.
+- **`.env.example`** — Example environment variable configuration.
 
 ## ⚙️ Installation and Setup
 
@@ -86,8 +95,8 @@ ai-job-hunter/
 
 - Python installed on your system.
 - Git installed on your system.
-- Internet access for retrieving live job listings and calling the AI API.
-- A Groq API key for AI-powered functionality.
+- Internet access for retrieving live job listings and accessing the AI API.
+- A Groq API key for AI-powered features.
 
 ### 1. Clone the repository
 
@@ -96,7 +105,7 @@ git clone https://github.com/umerzahid109-sketch/ai-job-hunter.git
 cd ai-job-hunter
 ```
 
-### 2. Create a virtual environment
+### 2. Create and activate a virtual environment
 
 On Windows PowerShell:
 
@@ -105,7 +114,7 @@ python -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
 
-If PowerShell blocks environment activation, you can run the environment's Python directly using `.venv\Scripts\python.exe`.
+If PowerShell blocks environment activation, you can use the virtual environment's Python executable directly.
 
 ### 3. Install dependencies
 
@@ -116,16 +125,16 @@ python -m pip install -r requirements.txt
 ### 4. Configure the Groq API
 
 1. Visit the [Groq Console](https://console.groq.com/) and obtain an API key.
-2. Create a `.env` file in the project's root directory.
+2. Create a `.env` file in the project root, following the format in `.env.example`.
 3. Add your API key:
 
 ```env
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
-4. Ensure the application loads the environment variable before making API requests.
+4. Ensure your environment variable is loaded by the application before making API requests.
 
-**Security:** Never commit your real API key or `.env` file to GitHub. The `.env` file should remain excluded through `.gitignore`.
+**Security:** Never commit your real API key or `.env` file to GitHub. Keep credentials private and ensure `.env` remains excluded by `.gitignore`.
 
 ### 5. Run the application
 
@@ -133,11 +142,11 @@ GROQ_API_KEY=your_groq_api_key_here
 streamlit run app.py
 ```
 
-Once Streamlit starts, open the local URL printed in your terminal to access the application.
+Once Streamlit starts, open the local URL displayed in your terminal.
 
 ## 🧪 Testing
 
-Run the tests from the project root.
+Run the test scripts from the project's root directory.
 
 ### Test application assistance
 
@@ -145,7 +154,7 @@ Run the tests from the project root.
 python test_application_assistant.py
 ```
 
-### Test the Groq API connection
+### Test Groq API connectivity
 
 ```powershell
 python test_groq_connection.py
@@ -157,36 +166,14 @@ python test_groq_connection.py
 python test_groq_generation.py
 ```
 
-The Groq tests require valid API credentials and an internet connection. API availability, model access, and rate limits may affect their results.
+The Groq tests require valid API credentials and an internet connection. Results may vary depending on API availability, model access, and rate limits.
 
 ## 🔐 Security and Responsible AI
 
-- Keep API keys and other credentials out of source control.
-- Use environment variables or a secure secrets manager to store credentials.
-- Review AI-generated CV suggestions and cover letters before submitting applications.
-- Ensure candidate claims remain consistent with actual skills, experience, and qualifications.
-- Verify job details and application requirements using the original job listing or employer website.
-
-## 🎯 Project Objectives
-
-AI Job Hunter aims to:
-
-1. Reduce the time required to discover relevant job opportunities.
-2. Help candidates understand how their skills align with job requirements.
-3. Simplify the preparation of role-specific CVs and cover letters.
-4. Encourage evidence-based and factually accurate AI-generated application content.
-5. Demonstrate practical integration of Python, machine learning, generative AI, APIs, and web application development.
-
-## 🔮 Future Improvements
-
-Potential enhancements include:
-
-- More job-source integrations and advanced filtering.
-- Personalized job recommendations based on skills and career preferences.
-- Job bookmarking and application tracking.
-- Improved CV parsing and skill extraction.
-- More comprehensive automated tests.
-- Deployment to a cloud hosting platform.
+- Keep API keys and credentials out of source control.
+- Review AI-generated CVs and cover letters before submitting applications.
+- Verify that generated statements accurately reflect your actual skills, qualifications, and experience.
+- Treat generated content as assistance rather than a guarantee of job suitability or application success.
 
 ## 👨‍💻 Author
 
