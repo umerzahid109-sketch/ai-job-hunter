@@ -767,7 +767,7 @@ Return valid JSON only.
             status = "EVIDENCE MATCHED — MANUAL REVIEW REQUIRED"
 
         else:
-            status = "SEMANTIC SUPPORT — MANUAL REVIEW REQUIRED"
+            status = "NEEDS REVIEW — EVIDENCE UNCLEAR"
 
         if rule_notes:
             reason = " ".join(rule_notes)
