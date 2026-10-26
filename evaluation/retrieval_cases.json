@@ -1,0 +1,104 @@
+
+
+[
+  {
+    "case_id": "R001",
+    "query": "Python API integration and automation",
+    "documents": [
+      {"source_id": "cv-python", "text": "Python programming API integration and automation"},
+      {"source_id": "cv-frontend", "text": "React frontend components and JavaScript interfaces"},
+      {"source_id": "cv-sql", "text": "SQL databases and relational data queries"}
+    ],
+    "relevant_source_ids": ["cv-python"]
+  },
+  {
+    "case_id": "R002",
+    "query": "React JavaScript frontend development",
+    "documents": [
+      {"source_id": "cv-python", "text": "Python programming API integration and automation"},
+      {"source_id": "cv-frontend", "text": "React frontend components and JavaScript interfaces"},
+      {"source_id": "cv-sql", "text": "SQL databases and relational data queries"}
+    ],
+    "relevant_source_ids": ["cv-frontend"]
+  },
+  {
+    "case_id": "R003",
+    "query": "SQL database queries",
+    "documents": [
+      {"source_id": "cv-python", "text": "Python programming API integration and automation"},
+      {"source_id": "cv-frontend", "text": "React frontend components and JavaScript interfaces"},
+      {"source_id": "cv-sql", "text": "SQL databases and relational data queries"}
+    ],
+    "relevant_source_ids": ["cv-sql"]
+  },
+  {
+    "case_id": "R004",
+    "query": "Python automation experience for an AI engineering role",
+    "documents": [
+      {"source_id": "cv-python", "text": "Python programming API integration and automation"},
+      {"source_id": "cv-frontend", "text": "React frontend components and JavaScript interfaces"},
+      {"source_id": "cv-sql", "text": "SQL databases and relational data queries"}
+    ],
+    "relevant_source_ids": ["cv-python"]
+  },
+  {
+    "case_id": "R005",
+    "query": "unrelated underwater basket weaving",
+    "documents": [
+      {"source_id": "cv-python", "text": "Python programming API integration and automation"},
+      {"source_id": "cv-frontend", "text": "React frontend components and JavaScript interfaces"},
+      {"source_id": "cv-sql", "text": "SQL databases and relational data queries"}
+    ],
+    "relevant_source_ids": []
+  },
+  {
+    "case_id": "R006",
+    "query": "Experience streamlining repetitive workflows",
+    "documents": [
+      {"source_id": "cv-python", "text": "Built automated scripts using Python to process repetitive tasks"},
+      {"source_id": "cv-frontend", "text": "Created responsive web interfaces using React and JavaScript"},
+      {"source_id": "cv-sql", "text": "Designed relational database queries using SQL"}
+    ],
+    "relevant_source_ids": ["cv-python"]
+  },
+  {
+    "case_id": "R007",
+    "query": "Building interactive user-facing websites",
+    "documents": [
+      {"source_id": "cv-python", "text": "Built automated scripts using Python to process repetitive tasks"},
+      {"source_id": "cv-frontend", "text": "Created responsive web interfaces using React and JavaScript"},
+      {"source_id": "cv-sql", "text": "Designed relational database queries using SQL"}
+    ],
+    "relevant_source_ids": ["cv-frontend"]
+  },
+  {
+    "case_id": "R008",
+    "query": "Working with structured records and querying stored information",
+    "documents": [
+      {"source_id": "cv-python", "text": "Built automated scripts using Python to process repetitive tasks"},
+      {"source_id": "cv-frontend", "text": "Created responsive web interfaces using React and JavaScript"},
+      {"source_id": "cv-sql", "text": "Designed relational database queries using SQL"}
+    ],
+    "relevant_source_ids": ["cv-sql"]
+  },
+  {
+    "case_id": "R009",
+    "query": "automation",
+    "documents": [
+      {"source_id": "cv-python", "text": "Built automated scripts using Python to process repetitive tasks"},
+      {"source_id": "cv-frontend", "text": "Created responsive web interfaces using React and JavaScript"},
+      {"source_id": "cv-sql", "text": "Designed relational database queries using SQL"}
+    ],
+    "relevant_source_ids": ["cv-python"]
+  },
+  {
+    "case_id": "R010",
+    "query": "Kubernetes cluster administration",
+    "documents": [
+      {"source_id": "cv-python", "text": "Built automated scripts using Python to process repetitive tasks"},
+      {"source_id": "cv-frontend", "text": "Created responsive web interfaces using React and JavaScript"},
+      {"source_id": "cv-sql", "text": "Designed relational database queries using SQL"}
+    ],
+    "relevant_source_ids": []
+  }
+]
