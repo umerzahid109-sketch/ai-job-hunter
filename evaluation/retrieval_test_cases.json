@@ -1,0 +1,311 @@
+[
+  {
+    "case_id": "T001",
+    "query": "Write scripts to automate repetitive office tasks",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Built Python scripts for API integration and repetitive task automation"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "Developed responsive React interfaces with JavaScript"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "Created SQL queries for relational databases"
+      }
+    ],
+    "relevant_source_ids": [
+      "cv-python"
+    ]
+  },
+  {
+    "case_id": "T002",
+    "query": "Experience building web pages with reusable UI components",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Automated workflows and integrated APIs using Python"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "Built interactive websites using React components and JavaScript"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "Managed structured data using SQL queries"
+      }
+    ],
+    "relevant_source_ids": [
+      "cv-frontend"
+    ]
+  },
+  {
+    "case_id": "T003",
+    "query": "Retrieve specific records from a relational data store",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Created Python automation scripts"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "Designed user-facing web interfaces with React"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "Queried relational databases and retrieved records using SQL"
+      }
+    ],
+    "relevant_source_ids": [
+      "cv-sql"
+    ]
+  },
+  {
+    "case_id": "T004",
+    "query": "Connect software services through programmatic interfaces",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Integrated APIs and automated workflows using Python"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "Created responsive layouts and interactive browser interfaces"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "Designed database queries for structured information"
+      }
+    ],
+    "relevant_source_ids": [
+      "cv-python"
+    ]
+  },
+  {
+    "case_id": "T005",
+    "query": "Create interactive browser-based user interfaces",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Used Python for automating repetitive workflows"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "Built interactive frontend interfaces using React and JavaScript"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "Worked with SQL and relational data"
+      }
+    ],
+    "relevant_source_ids": [
+      "cv-frontend"
+    ]
+  },
+  {
+    "case_id": "T006",
+    "query": "Filter and retrieve information using database query language",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Automated file processing using Python scripts"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "Developed React components for web applications"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "Used SQL queries to retrieve and filter relational database records"
+      }
+    ],
+    "relevant_source_ids": [
+      "cv-sql"
+    ]
+  },
+  {
+    "case_id": "T007",
+    "query": "Reduce manual work by automating a workflow",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Automated repetitive processes with Python scripts"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "Created interactive websites using React"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "Queried relational databases with SQL"
+      }
+    ],
+    "relevant_source_ids": [
+      "cv-python"
+    ]
+  },
+  {
+    "case_id": "T008",
+    "query": "Build the client-side portion of a web application",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Integrated APIs with Python automation"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "Developed frontend web application components using React and JavaScript"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "Designed relational database queries"
+      }
+    ],
+    "relevant_source_ids": [
+      "cv-frontend"
+    ]
+  },
+  {
+    "case_id": "T009",
+    "query": "Store related information in tables and query it",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Wrote Python scripts for repetitive tasks"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "Built web interfaces with JavaScript"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "Worked with relational tables and queried structured data using SQL"
+      }
+    ],
+    "relevant_source_ids": [
+      "cv-sql"
+    ]
+  },
+  {
+    "case_id": "T010",
+    "query": "Which experience demonstrates automation?",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Created Python scripts to automate repetitive workflows"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "Built interactive React and JavaScript interfaces"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "Wrote SQL queries for relational databases"
+      }
+    ],
+    "relevant_source_ids": [
+      "cv-python"
+    ]
+  },
+  {
+    "case_id": "T011",
+    "query": "Which skills are relevant to frontend development?",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Python scripting and API automation"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "React, JavaScript, responsive layouts, and interactive web components"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "SQL queries and relational database design"
+      }
+    ],
+    "relevant_source_ids": [
+      "cv-frontend"
+    ]
+  },
+  {
+    "case_id": "T012",
+    "query": "Find experience working with structured data",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Python scripts for automating repetitive operations"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "Responsive React web interfaces"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "Relational databases, structured records, and SQL queries"
+      }
+    ],
+    "relevant_source_ids": [
+      "cv-sql"
+    ]
+  },
+  {
+    "case_id": "T013",
+    "query": "Train and deploy a deep neural network for image recognition",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Python scripting and API integration for workflow automation"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "React components and JavaScript web interfaces"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "SQL database queries and relational data"
+      }
+    ],
+    "relevant_source_ids": []
+  },
+  {
+    "case_id": "T014",
+    "query": "Configure Kubernetes clusters and manage container orchestration",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Python scripts for automating repetitive tasks"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "Interactive frontend components using React"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "Relational database queries using SQL"
+      }
+    ],
+    "relevant_source_ids": []
+  },
+  {
+    "case_id": "T015",
+    "query": "Perform underwater basket weaving",
+    "documents": [
+      {
+        "source_id": "cv-python",
+        "text": "Python API integration and workflow automation"
+      },
+      {
+        "source_id": "cv-frontend",
+        "text": "React and JavaScript web development"
+      },
+      {
+        "source_id": "cv-sql",
+        "text": "SQL databases and relational queries"
+      }
+    ],
+    "relevant_source_ids": []
+  }
+]
