@@ -27,6 +27,7 @@ from src.linkedin_search import (
     build_linkedin_search_url,
     get_search_categories,
 )
+from src.rag.cv_evidence import CVEvidenceRetriever
 
 st.set_page_config(
     page_title="AI Job Hunter",
@@ -657,6 +658,134 @@ with cv_tab:
             "describes your skills or experience. Some terms may be "
             "ordinary words rather than job requirements."
         )
+
+
+    # ---------------- CV EVIDENCE RETRIEVAL ----------------
+
+    st.divider()
+    st.subheader("🔎 Find supporting evidence in your CV")
+    st.write(
+        "Retrieve passages from your CV that are semantically relevant "
+        "to the target job description."
+    )
+    st.caption(
+        "Retrieved passages are references for manual review, not proof "
+        "that a generated claim is supported. Similarity scores are not "
+        "probabilities."
+    )
+
+    if st.button(
+        "Find relevant CV evidence",
+        key="find_cv_evidence_button",
+        **STRETCH,
+    ):
+        if not cv_text.strip():
+            st.warning("Upload a readable PDF CV first.")
+        elif not job_description.strip():
+            st.warning("Paste a job description first.")
+        else:
+            try:
+                import hashlib
+
+                # Keep the retriever in this session and rebuild it only
+                # when the uploaded CV changes.
+                cv_hash = hashlib.sha256(
+                    cv_text.encode("utf-8")
+                ).hexdigest()
+
+                cached_hash = st.session_state.get(
+                    "cv_evidence_source_hash"
+                )
+
+                if (
+                    cached_hash != cv_hash
+                    or "cv_evidence_retriever" not in st.session_state
+                ):
+                    with st.spinner(
+                        "Building a semantic index of your CV..."
+                    ):
+                        st.session_state["cv_evidence_retriever"] = (
+                            CVEvidenceRetriever.from_cv(
+                                cv_text,
+                                source_id="candidate_cv",
+                                chunk_size=20,
+                                overlap=5,
+                            )
+                        )
+                        st.session_state["cv_evidence_source_hash"] = (
+                            cv_hash
+                        )
+
+                with st.spinner("Finding relevant CV passages..."):
+                    evidence_results = (
+                        st.session_state["cv_evidence_retriever"].retrieve(
+                            job_description[:3000],
+                            top_k=5,
+                            min_score=0.35,
+                        )
+                    )
+
+                st.session_state["cv_evidence_results"] = [
+                    {
+                        "text": item.chunk.text,
+                        "score": item.score,
+                    }
+                    for item in evidence_results
+                ]
+                st.session_state["cv_evidence_query_hash"] = hashlib.sha256(
+                    (
+                        cv_hash
+                        + "\0"
+                        + job_description
+                    ).encode("utf-8")
+                ).hexdigest()
+
+            except Exception as exc:
+                st.session_state.pop("cv_evidence_results", None)
+                st.error(f"Unable to retrieve CV evidence: {exc}")
+
+    # Show results only when they match the current CV and job description.
+    evidence_results = st.session_state.get("cv_evidence_results")
+    evidence_query_hash = st.session_state.get("cv_evidence_query_hash")
+
+    if cv_text.strip() and job_description.strip():
+        import hashlib
+
+        current_cv_hash = hashlib.sha256(
+            cv_text.encode("utf-8")
+        ).hexdigest()
+        current_query_hash = hashlib.sha256(
+            (
+                current_cv_hash
+                + "\0"
+                + job_description
+            ).encode("utf-8")
+        ).hexdigest()
+
+        if evidence_query_hash == current_query_hash:
+            if evidence_results:
+                st.markdown("#### Retrieved passages")
+
+                for index, item in enumerate(evidence_results, start=1):
+                    with st.container(border=True):
+                        st.markdown(f"**Passage {index}**")
+                        st.caption(
+                            f"Semantic similarity: {item['score']:.3f}"
+                        )
+                        st.write(item["text"])
+
+                st.caption(
+                    "Review each passage in context before using it in an "
+                    "application. A retrieved passage may be incomplete "
+                    "or insufficient to support a particular claim."
+                )
+            else:
+                st.info(
+                    "No passages met the current similarity threshold. "
+                    "This does not necessarily mean your CV lacks relevant "
+                    "experience; review the CV manually or try a more "
+                    "specific job description."
+                )
 
 
 # =====================================================================
