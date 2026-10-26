@@ -669,6 +669,8 @@ Return valid JSON only.
             and "react" not in gmail_project_text
         )
 
+        rule_notes = []
+
         if gmail_javascript_evidence_missing:
             rule_notes.append(
                 "The CV does not establish JavaScript usage in the "
@@ -706,8 +708,6 @@ Return valid JSON only.
         api_integration_supported = (
             api_integration_claim and documented_email_api_use
         )
-
-        rule_notes = []
 
         if proficiency_overclaim:
             rule_notes.append(
